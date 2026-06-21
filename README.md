@@ -1,6 +1,6 @@
 # web-selenium-java-framework
 
-Java test automation framework built with **TestNG** and **Selenium WebDriver**. Features Page Object Model, parallel execution, Allure reports, retry logic, and multi-environment configuration.
+Java test automation framework built with **TestNG** and **Selenium WebDriver**. Features Page Object Model, parallel execution, Allure reports, retry logic, and multienvironment configuration.
 
 ## Architecture Overview
 
@@ -37,7 +37,7 @@ com.qaframework/
 1. **Zero shared mutable state** — `DriverManager` wraps `ThreadLocal<WebDriver>`; every parallel thread gets its own browser.
 2. **Explicit waits only** — no implicit waits on the driver directly; all waits flow through `WaitManager`.
 3. **Page Object Model** — each page class encapsulates locators and interactions; test code speaks in domain language.
-4. **Multi-environment config** — properties files per env, with OS environment variable override for secrets.
+4. **Multienvironment config** — properties files per env, with OS environment variable override for secrets.
 
 ## Quick Start
 
@@ -59,13 +59,13 @@ mvn allure:serve
 
 Each environment lives in `src/test/resources/config/`:
 
-| File    | Purpose                        | Retries |
-|---------|-------------------------------|---------|
-| `local`  | Developer machine, no headless  | 1       |
-| `qa`     | QA staging, headless Chrome     | 1       |
-| `sit`    | Integration tests             | 2       |
-| `uat`    | User acceptance              | 2       |
-| `prod`   | Read-only production (no retries!) | 0  |
+| File    | Purpose                            | Retries |
+|---------|------------------------------------|---------|
+| `local` | Developer machine, no headless     | 1       |
+| `qa`    | QA staging, headless Chrome        | 1       |
+| `sit`   | Integration tests                  | 2       |
+| `uat`   | User acceptance                    | 2       |
+| `prod`  | Read-only production (no retries!) | 0       |
 
 Override any property via OS environment variables:
 ```bash
@@ -101,12 +101,12 @@ Screenshots captured on test failure appear in the Allure "Attachments" section 
 
 ## Code Quality Plugins
 
-| Plugin     | Phase     | Purpose                          |
-|------------|-----------|----------------------------------|
-| Spotless   | validate  | Google Java Format enforcement   |
-| Checkstyle | validate  | Style guide + suppressions       |
-| PMD        | validate  | Static analysis (no Thread.sleep, no static WebDriver) |
-| Enforcer   | verify    | JDK 21+, Maven 3.9+ requirement  |
+| Plugin     | Phase    | Purpose                                                |
+|------------|----------|--------------------------------------------------------|
+| Spotless   | validate | Google Java Format enforcement                         |
+| Checkstyle | validate | Style guide + suppressions                             |
+| PMD        | validate | Static analysis (no Thread.sleep, no static WebDriver) |
+| Enforcer   | verify   | JDK 21+, Maven 3.9+ requirement                        |
 
 ## Framework Commands
 
