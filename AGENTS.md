@@ -47,31 +47,33 @@ Java test automation framework built with **TestNG 7.10** and **Selenium WebDriv
 ## Architecture
 
 ```
-com.qaframework/
-├── api/
-│    └── BaseApiClient.java         ← RestAssured HTTP client base
-├── config/
-│    └── ConfigManager.java         ← Multi-env properties loader + env-var override
-├── driver/
-│    ├── BrowserType.java           ← chrome / firefox / edge enum (Java 21 switch)
-│    ├── DriverFactory.java         ← WebDriver instance creator (local + Grid)
-│    └── DriverManager.java         ← ThreadLocal<WebDriver> holder
-├── pages/
-│    ├── BasePage.java              ← Abstract POM base: waits, screenshots, actions
-│    ├── LoginPage.java             ← /login page object
-│    └── DashboardPage.java         ← post-login dashboard page object
-├── tests/
-│    ├── BaseTest.java              ← @BeforeMethod/@AfterMethod lifecycle
-│    ├── RetryAnalyzer.java         ← IRetryAnalyzer for flaky test retries
-│    ├── ScreenshotListener.java    ← ITestListener for screenshot on failure
-│    ├── LoginTest.java             ← login flow smoke tests
-│    └── ElementInteractionTest.java ← dynamic DOM element tests
-└── utils/
-     ├── DateUtils.java             ← LocalDate formatting, relative dates, quarters
-     ├── FileUtils.java             ← file read/write/cleanup + Jackson serialization
-     ├── JsonUtils.java             ← OBJECT_MAPPER + JSON <-> Map/array conversions
-     ├── ScreenshotService.java     ← base64/png screenshot capture for Allure attachments
-     └── WaitManager.java           ← WebDriverWait wrappers (visibility, clickability, text, URL)
+src/
+├── main/java/com/qaframework/
+│    ├── api/
+│    │    └── BaseApiClient.java         ← RestAssured HTTP client base
+│    ├── config/
+│    │    └── ConfigManager.java         ← Multi-env properties loader + env-var override
+│    ├── driver/
+│    │    ├── BrowserType.java           ← chrome / firefox / edge enum (Java 21 switch)
+│    │    ├── DriverFactory.java         ← WebDriver instance creator (local + Grid)
+│    │    └── DriverManager.java         ← ThreadLocal<WebDriver> holder
+│    └── utils/
+│         ├── DateUtils.java             ← LocalDate formatting, relative dates, quarters
+│         ├── FileUtils.java             ← file read/write/cleanup + Jackson serialization
+│         ├── JsonUtils.java             ← OBJECT_MAPPER + JSON <-> Map/array conversions
+│         ├── ScreenshotService.java     ← base64/png screenshot capture for Allure attachments
+│         └── WaitManager.java           ← WebDriverWait wrappers (visibility, clickability, text, URL)
+└── test/java/com/qaframework/
+     ├── pages/
+     │    ├── BasePage.java              ← Abstract POM base: waits, screenshots, actions
+     │    ├── LoginPage.java             ← /login page object
+     │    └── DashboardPage.java         ← post-login dashboard page object
+     └── tests/
+          ├── BaseTest.java              ← @BeforeMethod/@AfterMethod lifecycle
+          ├── RetryAnalyzer.java         ← IRetryAnalyzer for flaky test retries
+          ├── ScreenshotListener.java    ← ITestListener for screenshot on failure
+          ├── LoginTest.java             ← login flow smoke tests
+          └── ElementInteractionTest.java ← dynamic DOM element tests
 ```
 
 ### Driver Layer (`driver/`)
