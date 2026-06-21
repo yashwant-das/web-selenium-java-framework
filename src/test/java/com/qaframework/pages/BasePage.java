@@ -69,9 +69,8 @@ public abstract class BasePage {
 
   /** Gets the text content of an element. */
   protected String getText(By locator) {
-    WebElement element = WaitManager.waitForVisible(getDriver(), locator);
     log.debug("Getting text for element: {}", locator);
-    return element.getText();
+    return WaitManager.waitForTextPresent(getDriver(), locator);
   }
 
   /** Checks if an element is displayed on the page. */

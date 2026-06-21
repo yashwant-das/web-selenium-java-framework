@@ -1,5 +1,6 @@
 package com.qaframework.pages;
 
+import com.qaframework.utils.WaitManager;
 import org.openqa.selenium.By;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -72,6 +73,7 @@ public class LoginPage extends BasePage {
   public DashboardPage login(String username, String password) {
     log.info("Logging in as: {}", username);
     submitCredentials(username, password);
+    WaitManager.waitForUrlContains(getDriver(), "/secure");
     return new DashboardPage();
   }
 

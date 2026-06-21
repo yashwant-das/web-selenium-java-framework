@@ -3,6 +3,7 @@ package com.qaframework.utils;
 import com.qaframework.config.ConfigManager;
 import java.time.Duration;
 import org.openqa.selenium.By;
+import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedCondition;
@@ -171,6 +172,37 @@ public final class WaitManager {
     Duration timeout = Duration.ofSeconds(seconds);
     return waitForCondition(
         driver, timeout, ExpectedConditions.textToBePresentInElementLocated(locator, text));
+  }
+
+  /**
+   * Waits for an element to be visible and returns its non-empty text.
+   *
+   * @param driver the WebDriver instance
+   * @param locator the By locator to wait for
+   * @return the visible element text
+   */
+  public static String waitForTextPresent(WebDriver driver, By locator) {
+    return waitForTextPresent(driver, locator, getDefaultExplicitTimeout());
+  }
+
+  /**
+   * Waits for an element to be visible and returns its non-empty text within a custom timeout.
+   *
+   * @param driver the WebDriver instance
+   * @param locator the By locator to wait for
+   * @param seconds maximum wait time in seconds
+   * @return the visible element text
+   */
+  public static String waitForTextPresent(WebDriver driver, By locator, int seconds) {
+    Duration timeout = Duration.ofSeconds(seconds);
+    WebDriverWait wait = new WebDriverWait(driver, timeout);
+    wait.ignoring(StaleElementReferenceException.class);
+    log.debug("Waiting for text from element: {} (timeout={}s)", locator, timeout.getSeconds());
+    return wait.until(
+        webDriver -> {
+          String text = webDriver.findElement(locator).getText();
+          return text == null || text.isBlank() ? null : text;
+        });
   }
 
   // ──────────────────────────────────────────────
