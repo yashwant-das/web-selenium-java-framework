@@ -65,3 +65,4 @@ surefire-reports/
 # Checkstyle / PMD outputs
 checkstyle-result.xml
 pmd.xml
+/qodana

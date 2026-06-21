@@ -18,7 +18,12 @@ public final class JsonUtils {
     throw new UnsupportedOperationException("Utility class; no instances.");
   }
 
-  /** Serializes an object to a JSON string. */
+  /**
+   * Serializes an object to a JSON string.
+   *
+   * @param value the object to serialize
+   * @return the JSON string representation
+   */
   public static String toJson(Object value) {
     try {
       return OBJECT_MAPPER.writeValueAsString(value);
@@ -27,7 +32,12 @@ public final class JsonUtils {
     }
   }
 
-  /** Parses a JSON string into a {@code Map<String, Object>}. */
+  /**
+   * Parses a JSON string into a {@code Map<String, Object>}.
+   *
+   * @param json the JSON string to parse
+   * @return the parsed map
+   */
   public static Map<String, Object> toMap(String json) {
     try {
       return OBJECT_MAPPER.readValue(json, Map.class);
@@ -36,7 +46,14 @@ public final class JsonUtils {
     }
   }
 
-  /** Deserializes a JSON string into an array of the given component type. */
+  /**
+   * Deserializes a JSON string into an array of the given component type.
+   *
+   * @param <T> the type of the array elements
+   * @param json the JSON string to deserialize
+   * @param elementClass the class of the array elements
+   * @return the deserialized array
+   */
   @SuppressWarnings("unchecked")
   public static <T> T[] toArray(String json, Class<T> elementClass) {
     try {

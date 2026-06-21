@@ -51,13 +51,24 @@ public abstract class BaseApiClient {
     return spec;
   }
 
-  /** Sends a GET request with the base specification. */
+  /**
+   * Sends a GET request with the base specification.
+   *
+   * @param path the path for the GET request
+   * @return the response from the request
+   */
   protected io.restassured.response.Response get(String path) {
     log.debug("GET {}", path);
     return RestAssured.given().spec(getSpec()).when().get(path).then().extract().response();
   }
 
-  /** Sends a POST request with JSON body. */
+  /**
+   * Sends a POST request with JSON body.
+   *
+   * @param path the path for the POST request
+   * @param body the JSON body to send
+   * @return the response from the request
+   */
   protected io.restassured.response.Response post(String path, Object body) {
     log.debug("POST {} (body={})", path, body);
     return RestAssured.given()
@@ -70,13 +81,24 @@ public abstract class BaseApiClient {
         .response();
   }
 
-  /** Sends a DELETE request. */
+  /**
+   * Sends a DELETE request.
+   *
+   * @param path the path for the DELETE request
+   * @return the response from the request
+   */
   protected io.restassured.response.Response delete(String path) {
     log.debug("DELETE {}", path);
     return RestAssured.given().spec(getSpec()).when().delete(path).then().extract().response();
   }
 
-  /** Sends a PUT request with JSON body. */
+  /**
+   * Sends a PUT request with JSON body.
+   *
+   * @param path the path for the PUT request
+   * @param body the JSON body to send
+   * @return the response from the request
+   */
   protected io.restassured.response.Response put(String path, Object body) {
     log.debug("PUT {} (body={})", path, body);
     return RestAssured.given()

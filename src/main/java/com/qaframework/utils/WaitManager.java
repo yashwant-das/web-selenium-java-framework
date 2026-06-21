@@ -201,7 +201,7 @@ public final class WaitManager {
     return wait.until(
         webDriver -> {
           String text = webDriver.findElement(locator).getText();
-          return text == null || text.isBlank() ? null : text;
+          return text.isBlank() ? null : text;
         });
   }
 
