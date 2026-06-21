@@ -1,5 +1,6 @@
 package com.qaframework.pages;
 
+import com.qaframework.config.ConfigManager;
 import com.qaframework.driver.DriverManager;
 import com.qaframework.utils.ScreenshotService;
 import com.qaframework.utils.WaitManager;
@@ -46,7 +47,8 @@ public abstract class BasePage {
    * @param path the relative path (e.g., "/login")
    */
   protected void navigateTo(String path) {
-    String baseUrl = "https://the-internet.herokuapp.com";
+    String baseUrl =
+        ConfigManager.getInstance().get("base.url", "https://the-internet.herokuapp.com");
     String url = baseUrl + path;
     log.info("Navigating to: {}", url);
     getDriver().get(url);
@@ -76,7 +78,8 @@ public abstract class BasePage {
   /** Checks if an element is displayed on the page. */
   protected boolean isDisplayed(By locator) {
     try {
-      WebElement element = WaitManager.waitForVisible(getDriver(), locator, 5);
+      int timeout = ConfigManager.getInstance().getInt("element.check.timeout", 5);
+      WebElement element = WaitManager.waitForVisible(getDriver(), locator, timeout);
       log.debug("Element {} is displayed", locator);
       return element.isDisplayed();
     } catch (Exception e) {

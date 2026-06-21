@@ -87,7 +87,7 @@ src/
 
 ### Config Layer (`config/`)
 
-Five environments in `src/test/resources/config/`: `{env}.properties`. ConfigManager resolves values with env-var override priority (e.g., `BASE_URL` → file value → hard-coded default). All accessors are `synchronized` for thread safety.
+Five environments in `src/test/resources/config/`: `{env}.properties`. ConfigManager resolves values with env-var override priority (e.g., `BASE_URL` → file value → hard-coded default). All accessors are lock-free and use `ConcurrentHashMap` caching for high-performance thread safety.
 
 ### Page Object Model (`pages/`)
 

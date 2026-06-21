@@ -1,9 +1,7 @@
 package com.qaframework.driver;
 
 import com.qaframework.config.ConfigManager;
-import java.net.URL;
 import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -90,7 +88,7 @@ public final class DriverFactory {
         };
 
     try {
-      return new RemoteWebDriver(new URL(remoteUrl), capabilities);
+      return new RemoteWebDriver(java.net.URI.create(remoteUrl).toURL(), capabilities);
     } catch (Exception e) {
       throw new IllegalStateException("Failed to create RemoteWebDriver for URL: " + remoteUrl, e);
     }
@@ -142,7 +140,8 @@ public final class DriverFactory {
    *
    * @param options browser capabilities to update
    */
-  private static void addCommonCapabilities(MutableCapabilities options) {
-    options.setCapability("acceptInsecureCerts", true);
+  private static void addCommonCapabilities(
+      org.openqa.selenium.remote.AbstractDriverOptions<?> options) {
+    options.setAcceptInsecureCerts(true);
   }
 }

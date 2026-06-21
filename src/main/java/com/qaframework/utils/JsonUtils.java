@@ -1,5 +1,6 @@
 package com.qaframework.utils;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import java.io.IOException;
@@ -40,7 +41,7 @@ public final class JsonUtils {
    */
   public static Map<String, Object> toMap(String json) {
     try {
-      return OBJECT_MAPPER.readValue(json, Map.class);
+      return OBJECT_MAPPER.readValue(json, new TypeReference<Map<String, Object>>() {});
     } catch (IOException e) {
       throw new RuntimeException(e);
     }

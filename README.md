@@ -41,7 +41,7 @@ src/
 1. **Zero shared mutable state** — `DriverManager` wraps `ThreadLocal<WebDriver>`; every parallel thread gets its own browser.
 2. **Explicit waits only** — no implicit waits on the driver directly; all waits flow through `WaitManager`.
 3. **Page Object Model** — each page class encapsulates locators and interactions; test code speaks in domain language.
-4. **Multienvironment config** — properties files per env, with OS environment variable override for secrets.
+4. **Multienvironment config** — properties files per env, with OS environment variable override for secrets. Lock-free `ConfigManager` prevents thread contention.
 
 ## Quick Start
 

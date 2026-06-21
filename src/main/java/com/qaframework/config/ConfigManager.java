@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Locale;
 import java.util.Properties;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 
 /**
@@ -45,7 +46,8 @@ public final class ConfigManager {
   /** The singleton instance -- initialized eagerly for thread safety (effective immutable). */
   private static final ConfigManager INSTANCE = new ConfigManager();
 
-  private Properties properties;
+  private volatile Properties properties;
+  private final ConcurrentHashMap<String, String> envCache = new ConcurrentHashMap<>();
 
   /** Prevent external instantiation; use getInstance() to access configuration. */
   private ConfigManager() {
@@ -69,7 +71,7 @@ public final class ConfigManager {
    * @param env the environment name (local, qa, sit, uat, prod)
    */
   public synchronized void load(String env) {
-    properties = new Properties();
+    Properties newProperties = new Properties();
     try (InputStream is =
         getClass().getClassLoader().getResourceAsStream("config/" + env + ".properties")) {
       if (is == null) {
@@ -77,9 +79,12 @@ public final class ConfigManager {
             "Configuration file not found for env: "
                 + env
                 + ". Using empty properties -- all getters will return defaults.");
+        properties = newProperties;
         return;
       }
-      properties.load(is);
+      newProperties.load(is);
+      properties = newProperties;
+      envCache.clear();
     } catch (IOException e) {
       log.severe("Failed to load configuration for env: " + env + " -- " + e.getMessage());
     }
@@ -99,14 +104,24 @@ public final class ConfigManager {
    * @param key the property key
    * @return the resolved string value, or {@code null} if not found
    */
-  public synchronized String get(String key) {
+  public String get(String key) {
     String envKey = key.toUpperCase(Locale.ROOT).replace('.', '_');
-    String envValue = System.getenv(envKey);
-    if (envValue != null && !envValue.isEmpty()) {
-      log.fine("Using environment variable for key: " + key);
+
+    // Check and cache env variables to avoid repeated System.getenv calls
+    String envValue =
+        envCache.computeIfAbsent(
+            envKey,
+            k -> {
+              String val = System.getenv(k);
+              return val != null ? val : ""; // Use empty string to cache nulls
+            });
+
+    if (!envValue.isEmpty()) {
       return envValue;
     }
-    return properties != null ? properties.getProperty(key) : null;
+
+    Properties props = properties; // read volatile
+    return props != null ? props.getProperty(key) : null;
   }
 
   /**
@@ -116,7 +131,7 @@ public final class ConfigManager {
    * @param defaultValue the fallback value if neither env var nor properties file has the key
    * @return the resolved string value, or {@code defaultValue} if not found
    */
-  public synchronized String get(String key, String defaultValue) {
+  public String get(String key, String defaultValue) {
     String value = get(key);
     return value != null ? value : defaultValue;
   }
@@ -128,7 +143,7 @@ public final class ConfigManager {
    * @param defaultValue the fallback integer if not found or not parseable
    * @return the parsed integer, or {@code defaultValue} if not parseable
    */
-  public synchronized int getInt(String key, int defaultValue) {
+  public int getInt(String key, int defaultValue) {
     String value = get(key);
     if (value == null) {
       return defaultValue;
@@ -148,7 +163,7 @@ public final class ConfigManager {
    * @param defaultValue the fallback boolean if not found or not parseable
    * @return {@code true} if value is "true", {@code false} otherwise
    */
-  public synchronized boolean getBoolean(String key, boolean defaultValue) {
+  public boolean getBoolean(String key, boolean defaultValue) {
     String value = get(key);
     if (value == null) {
       return defaultValue;
@@ -163,7 +178,7 @@ public final class ConfigManager {
    * @param defaultValue the fallback long if not found or not parseable
    * @return the parsed long, or {@code defaultValue} if not parseable
    */
-  public synchronized long getLong(String key, long defaultValue) {
+  public long getLong(String key, long defaultValue) {
     String value = get(key);
     if (value == null) {
       return defaultValue;

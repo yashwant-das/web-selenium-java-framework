@@ -1,6 +1,7 @@
 package com.qaframework.tests;
 
 import com.qaframework.base.BaseTest;
+import com.qaframework.config.ConfigManager;
 import com.qaframework.pages.DashboardPage;
 import com.qaframework.pages.LoginPage;
 import org.slf4j.Logger;
@@ -21,11 +22,15 @@ public class LoginTest extends BaseTest {
 
   private static final Logger log = LoggerFactory.getLogger(LoginTest.class);
 
-  /** Valid username for the-internet.herokuapp.com. */
-  private static final String VALID_USERNAME = "tomsmith";
+  /** Retrieves the valid username from config or uses default. */
+  private String getValidUsername() {
+    return ConfigManager.getInstance().get("test.username", "tomsmith");
+  }
 
-  /** Valid password for the-internet.herokuapp.com (changed in tests). */
-  private static final String VALID_PASSWORD = "SuperSecretPassword!"; // placeholder
+  /** Retrieves the valid password from config or uses default. */
+  private String getValidPassword() {
+    return ConfigManager.getInstance().get("test.password", "SuperSecretPassword!");
+  }
 
   // ──────────────────────────────────────────────
   // Positive tests
@@ -37,7 +42,7 @@ public class LoginTest extends BaseTest {
     LoginPage loginPage = new LoginPage();
     Assert.assertTrue(loginPage.isUsernameFieldDisplayed(), "Username field should be visible");
     Assert.assertTrue(loginPage.isPasswordFieldDisplayed(), "Password field should be visible");
-    DashboardPage dashboard = loginPage.login("tomsmith", "SuperSecretPassword!");
+    DashboardPage dashboard = loginPage.login(getValidUsername(), getValidPassword());
     Assert.assertTrue(
         dashboard.isHeaderDisplayed(), "Dashboard header should be displayed after login");
   }
@@ -46,7 +51,7 @@ public class LoginTest extends BaseTest {
   @Test(description = "Dashboard displays welcome message after successful login")
   public void testDashboardWelcomeMessage() {
     LoginPage loginPage = new LoginPage();
-    DashboardPage dashboard = loginPage.login("tomsmith", "SuperSecretPassword!");
+    DashboardPage dashboard = loginPage.login(getValidUsername(), getValidPassword());
     String headerText = dashboard.getHeader();
     Assert.assertTrue(
         headerText.contains("Secure Area"),
@@ -73,7 +78,7 @@ public class LoginTest extends BaseTest {
   @Test(description = "Valid logout redirects to login page")
   public void testLogoutReturnsToLoginPage() {
     LoginPage loginPage = new LoginPage();
-    DashboardPage dashboard = loginPage.login("tomsmith", "SuperSecretPassword!");
+    DashboardPage dashboard = loginPage.login(getValidUsername(), getValidPassword());
     LoginPage loggedOut = dashboard.logOut();
     Assert.assertTrue(
         loggedOut.isUsernameFieldDisplayed(), "Username field should be visible after logout");

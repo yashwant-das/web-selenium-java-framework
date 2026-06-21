@@ -1,5 +1,6 @@
 package com.qaframework.api;
 
+import com.qaframework.config.ConfigManager;
 import io.restassured.RestAssured;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.specification.RequestSpecification;
@@ -36,19 +37,15 @@ public abstract class BaseApiClient {
 
   /** Returns the configured base URI from environment config. */
   protected String getBaseUrl() {
-    return "https://the-internet.herokuapp.com";
+    return ConfigManager.getInstance().get("base.url", "https://the-internet.herokuapp.com");
   }
 
   /** Returns a pre-configured RequestSpecification. */
   protected RequestSpecification getSpec() {
-    if (spec == null) {
-      spec =
-          new RequestSpecBuilder()
-              .setBaseUri(getBaseUrl())
-              .setContentType(io.restassured.http.ContentType.JSON)
-              .build();
-    }
-    return spec;
+    return new RequestSpecBuilder()
+        .setBaseUri(getBaseUrl())
+        .setContentType(io.restassured.http.ContentType.JSON)
+        .build();
   }
 
   /**
@@ -110,6 +107,4 @@ public abstract class BaseApiClient {
         .extract()
         .response();
   }
-
-  private RequestSpecification spec;
 }
