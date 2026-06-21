@@ -64,14 +64,16 @@ src/
 │         ├── ScreenshotService.java     ← base64/png screenshot capture for Allure attachments
 │         └── WaitManager.java           ← WebDriverWait wrappers (visibility, clickability, text, URL)
 └── test/java/com/qaframework/
+     ├── base/
+     │    └── BaseTest.java              ← @BeforeMethod/@AfterMethod lifecycle
+     ├── listeners/
+     │    ├── RetryAnalyzer.java         ← IRetryAnalyzer for flaky test retries
+     │    └── ScreenshotListener.java    ← ITestListener for screenshot on failure
      ├── pages/
      │    ├── BasePage.java              ← Abstract POM base: waits, screenshots, actions
      │    ├── LoginPage.java             ← /login page object
      │    └── DashboardPage.java         ← post-login dashboard page object
      └── tests/
-          ├── BaseTest.java              ← @BeforeMethod/@AfterMethod lifecycle
-          ├── RetryAnalyzer.java         ← IRetryAnalyzer for flaky test retries
-          ├── ScreenshotListener.java    ← ITestListener for screenshot on failure
           ├── LoginTest.java             ← login flow smoke tests
           └── ElementInteractionTest.java ← dynamic DOM element tests
 ```

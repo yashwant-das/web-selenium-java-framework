@@ -1,5 +1,6 @@
 package com.qaframework.tests;
 
+import com.qaframework.base.BaseTest;
 import java.util.List;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;

@@ -1,5 +1,6 @@
 package com.qaframework.tests;
 
+import com.qaframework.base.BaseTest;
 import com.qaframework.pages.DashboardPage;
 import com.qaframework.pages.LoginPage;
 import org.slf4j.Logger;

@@ -1,4 +1,4 @@
-package com.qaframework.tests;
+package com.qaframework.base;
 
 import com.qaframework.config.ConfigManager;
 import com.qaframework.driver.DriverFactory;
@@ -46,7 +46,7 @@ import org.testng.annotations.Listeners;
  * @author QA Framework Team
  * @since 1.0
  */
-@Listeners(com.qaframework.tests.ScreenshotListener.class)
+@Listeners(com.qaframework.listeners.ScreenshotListener.class)
 public abstract class BaseTest {
 
   protected static final Logger log = LoggerFactory.getLogger(BaseTest.class);

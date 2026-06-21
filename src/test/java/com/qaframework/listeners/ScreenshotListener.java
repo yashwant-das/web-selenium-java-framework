@@ -1,4 +1,4 @@
-package com.qaframework.tests;
+package com.qaframework.listeners;
 
 import java.nio.file.Path;
 import org.openqa.selenium.WebDriver;
