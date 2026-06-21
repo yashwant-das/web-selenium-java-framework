@@ -18,8 +18,10 @@ import java.util.logging.Logger;
  * then falls back to the properties file. This ensures credentials never appear in committed files:
  *
  * <pre>
- *   Properties file:   BASE_URL = &lt;a href="https://the-internet.herokuapp.com"&gt;https://the-internet.herokuapp.com&lt;/a&gt;
- *   Env variable:      BASE_URL=&lt;a href="https://qa.example.com"&gt;https://qa.example.com&lt;/a&gt;    Used at runtime
+ *   Properties file:   BASE_URL =
+ *       &lt;a href="https://the-internet.herokuapp.com"&gt;https://the-internet.herokuapp.com&lt;/a&gt;
+ *   Env variable:      BASE_URL=
+ *       &lt;a href="https://qa.example.com"&gt;https://qa.example.com&lt;/a&gt;    Used at runtime
  * </pre>
  *
  * <h2>Usage</h2>
