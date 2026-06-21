@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<!--
+    Checkstyle suppressions for test classes.
+
+    Test classes are exempt from:
+    - Javadoc requirements on methods (TestNG lifecycle methods don't need docs)
+    - Method naming conventions for @BeforeMethod, @AfterMethod etc.
+-->
+<suppressions>
+    <!-- Suppress Javadoc requirements for all test classes -->
+    <suppress checks="JavadocMethod" files="src/test/java/.*"/>
+    <suppress checks="JavadocType" files="src/test/java/.*"/>
+
+    <!-- Suppress method name convention for TestNG lifecycle methods (can start with uppercase) -->
+    <suppress checks="MethodName" files="src/test/java/.*"/>
+
+    <!-- Suppress visibility modifier for test fields (protected is fine in base classes) -->
+    <suppress checks="VisibilityModifier" files="src/test/java/.*"/>
+</suppressions>

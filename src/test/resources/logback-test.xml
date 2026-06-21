@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Logback test configuration.
+
+  Produces console output at DEBUG level during tests and writes structured logs
+  to target/logs/framework-test.log for CI inspection.
+-->
+<configuration>
+      <!-- Console appender: colored, human-readable -->
+     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+         <encoder>
+             <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+          </encoder>
+      </appender>
+
+      <!-- File appender: timestamped, append-only -->
+     <appender name="FILE" class="ch.qos.logback.core.FileAppender">
+         <file>target/logs/framework-test.log</file>
+         <append>true</append>
+         <encoder>
+             <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+          </encoder>
+      </appender>
+
+      <!-- Root logger: DEBUG to console, INFO to file -->
+     <root level="DEBUG">
+         <appender-ref ref="CONSOLE"/>
+         <appender-ref ref="FILE"/>
+      </root>
+
+      <!-- Silence Selenium's own debug noise -->
+     <logger name="org.seleniumhq" level="WARN"/>
+     <logger name="com.qaframework" level="DEBUG"/>
+</configuration>

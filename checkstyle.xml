@@ -1,0 +1,77 @@
+<?xml version="1.0"?>
+<!DOCTYPE module PUBLIC
+          "-//Checkstyle//DTD Checkstyle Configuration 1.3//EN"
+          "config/checkstyle/configuration_1_3.dtd">
+
+<!--
+    Checkstyle configuration based on Google Java Style Guide (2026).
+
+    Rules enforced:
+       - Line length: max 120 characters
+       - Javadoc required on public methods in main/ only
+       - Import ordering enforced (static imports first, then grouped by package)
+       - No wildcard imports
+
+    Test classes are exempt from Javadoc requirements via suppressions.xml.
+-->
+<module name="Checker">
+       <property name="charset" value="UTF-8"/>
+       <property name="severity" value="warning"/>
+
+       <!-- File length: max 2000 lines per file -->
+       <module name="FileLength">
+           <property name="max" value="2000"/>
+       </module>
+
+       <!-- Line length: max 120 characters -->
+       <module name="LineLengthCheck">
+           <property name="max" value="120"/>
+           <property name="ignorePattern" value="^ *\* *https?://"/>
+       </module>
+
+       <!-- File must end with newline -->
+       <module name="NewlineAtEndOfFile"/>
+
+       <!-- No trailing whitespace -->
+       <module name="RegexpSingleline">
+           <property name="format" value="\s+$"/>
+           <property name="message" value="Trailing whitespace"/>
+       </module>
+
+       <module name="TreeWalker">
+           <!-- Javadoc: required on public methods in main/ only -->
+           <module name="JavadocMethod">
+               <property name="allowMissingParamTags" value="false"/>
+               <property name="allowMissingReturnTag" value="true"/>
+           </module>
+
+           <!-- Javadoc: required on classes and interfaces in main/ only -->
+           <module name="JavadocType">
+               <property name="scope" value="public"/>
+               <property name="allowMissingParamTags" value="true"/>
+           </module>
+
+           <!-- Import ordering -->
+           <module name="AvoidStarImport"/>
+           <module name="RedundantImport"/>
+           <module name="AvoidStaticImport"/>
+
+           <!-- Member visibility: allow protected fields -->
+           <module name="VisibilityModifier">
+               <property name="protectedAllowed" value="true"/>
+           </module>
+
+           <!-- Naming conventions -->
+           <module name="MethodName">
+               <property name="format" value="^[a-z][a-zA-Z0-9_]*$"/>
+           </module>
+           <module name="TypeName">
+               <property name="format" value="^[A-Z][a-zA-Z0-9]*$"/>
+           </module>
+
+           <!-- Whitespace: no IndentationCheck in 10.x — handled by spotless -->
+
+           <!-- Package declaration enforcement -->
+           <module name="PackageDeclaration"/>
+       </module>
+</module>

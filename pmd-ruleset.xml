@@ -1,0 +1,63 @@
+<?xml version="1.0"?>
+<!--
+    PMD ruleset for web-selenium-java-framework (2026).
+
+    Focused PMD rules for framework-specific build gates.
+-->
+<ruleset name="QA Framework Rules">
+    <description>PMD rules for the Selenium Java test automation framework</description>
+
+    <rule ref="category/java/bestpractices.xml/SystemPrintln"/>
+    <rule ref="category/java/codestyle.xml/TooManyStaticImports"/>
+    <rule ref="category/java/design.xml/AvoidDeeplyNestedIfStmts"/>
+    <rule ref="category/java/errorprone.xml/EmptyCatchBlock"/>
+    <rule ref="category/java/errorprone.xml/UseLocaleWithCaseConversions"/>
+    <rule ref="category/java/errorprone.xml/CloseResource"/>
+
+    <!-- Custom rule: No Thread.sleep() -->
+    <rule name="NoThreadSleep"
+          since="1.0"
+          message="Avoid Thread.sleep(). Use WebDriverWait or WaitManager for explicit waits."
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          language="java">
+        <description>
+            Test automation must never use Thread.sleep(). Use explicit waits via WaitManager or WebDriverWait.
+        </description>
+        <priority>1</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+                <![CDATA[
+                    //MethodCall[
+                        pmd-java:matchesSig('java.lang.Thread#sleep(long)')
+                        or pmd-java:matchesSig('java.lang.Thread#sleep(long,int)')
+                    ]
+                ]]>
+                </value>
+            </property>
+        </properties>
+    </rule>
+
+    <!-- Custom rule: No static WebDriver -->
+    <rule name="NoStaticWebDriver"
+          since="1.0"
+          message="Avoid static WebDriver fields. Use ThreadLocal via DriverManager."
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          language="java">
+        <description>
+            Static WebDriver breaks parallel execution. Use DriverManager.getDriver() with ThreadLocal.
+        </description>
+        <priority>1</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+                <![CDATA[
+                    //FieldDeclaration[@Static = true()]
+                        [not(.//ClassType[pmd-java:typeIs('java.lang.ThreadLocal')])]
+                        //ClassType[pmd-java:typeIs('org.openqa.selenium.WebDriver')]
+                ]]>
+                </value>
+            </property>
+        </properties>
+    </rule>
+</ruleset>

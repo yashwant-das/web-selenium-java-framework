@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Regression test suite: comprehensive functional regression runs on every PR merge.
+
+  Usage: mvn test -P regression
+-->
+<suite name="Regression Tests" verbose="3" parallel="methods" thread-count="4">
+     <test name="Regression - Full Flow">
+         <packages>
+             <package name="com.qaframework.tests.*"/>
+         </packages>
+      </test>
+</suite>

@@ -1,8 +1,33 @@
-# Compiled class file
+# Compiled class files
 *.class
 
-# Log file
+# Build outputs
+target/
+!.mvn/wrapper/maven-wrapper.jar
+
+# Log files
 *.log
+logs/
+
+# Local tool state
+.claude/settings.local.json
+
+# Allure results (generated, not committed)
+allure-results/
+.allure/
+allure-report/
+
+# Qodana local output/cache
+.qodana/
+qodana-report/
+qodana.sarif.json
+
+# IDE files
+.idea/
+.vscode/
+*.iml
+*.ipr
+*.iws
 
 # BlueJ files
 *.ctxt
@@ -10,7 +35,7 @@
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
 
-# Package Files #
+# Package Files
 *.jar
 *.war
 *.nar
@@ -19,6 +44,24 @@
 *.tar.gz
 *.rar
 
-# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
+# virtual machine crash logs
 hs_err_pid*
 replay_pid*
+
+# Environment files (contain secrets — never commit)
+.env
+.env.*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Maven wrapper (optional, keep if used)
+.mvn/wrapper/*.jar.exclude
+
+# Test reports
+surefire-reports/
+
+# Checkstyle / PMD outputs
+checkstyle-result.xml
+pmd.xml

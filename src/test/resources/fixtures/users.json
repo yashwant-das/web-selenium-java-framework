@@ -1,0 +1,7 @@
+[
+  { "id": 1, "name": "Alice Johnson", "username": "ajohnson", "role": "admin" },
+  { "id": 2, "name": "Bob Smith", "username": "bsmith", "role": "user" },
+  { "id": 3, "name": "Charlie Brown", "username": "cbrown", "role": "user" },
+  { "id": 4, "name": "Diana Prince", "username": "dprince", "role": "moderator" },
+  { "id": 5, "name": "Eve Martinez", "username": "emartinez", "role": "user" }
+]
