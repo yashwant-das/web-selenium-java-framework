@@ -134,11 +134,20 @@ Screenshots captured on test failure appear in the Allure "Attachments" section 
 ## Framework Commands
 
 ```bash
-mvn clean compile                  # Build source + test classes
-mvn test -P smoke                  # Run smoke suite
-mvn test -P regression             # Run full regression
-mvn allure:serve                   # Launch Allure report (port 8080)
-mvn spotless:apply                 # Auto-format code
+# Build source + test classes
+mvn clean compile
+
+# Run smoke tests
+mvn test -P smoke
+
+# Run regression suite
+mvn test -P regression
+
+# Launch Allure report (port 8080)
+mvn allure:serve
+
+# Auto-format code
+mvn spotless:apply
 ```
 
 ## Documentation Reference
