@@ -26,8 +26,32 @@ public final class EnvironmentWriter {
 
   private static final Logger log = LoggerFactory.getLogger(EnvironmentWriter.class);
 
+  private static volatile String cachedBrowserName = null;
+  private static volatile String cachedBrowserVersion = null;
+
   private EnvironmentWriter() {
     // Private constructor to prevent instantiation
+  }
+
+  /**
+   * Caches browser details from an active driver.
+   *
+   * @param driver the active WebDriver instance
+   */
+  public static synchronized void setBrowserDetails(WebDriver driver) {
+    if (driver != null && driver instanceof HasCapabilities hasCaps && cachedBrowserName == null) {
+      try {
+        Capabilities caps = hasCaps.getCapabilities();
+        cachedBrowserName = caps.getBrowserName();
+        cachedBrowserVersion = caps.getBrowserVersion();
+        log.info(
+            "Cached browser details for Allure environment: {} - {}",
+            cachedBrowserName,
+            cachedBrowserVersion);
+      } catch (Exception e) {
+        log.debug("Failed to retrieve capabilities for caching: {}", e.getMessage());
+      }
+    }
   }
 
   /**
@@ -44,15 +68,22 @@ public final class EnvironmentWriter {
 
       Properties props = new Properties();
 
+      String browserName = "Unknown";
+      String browserVersion = "Unknown";
+
       if (driver != null && driver instanceof HasCapabilities hasCaps) {
         Capabilities caps = hasCaps.getCapabilities();
-        props.setProperty("Browser", caps.getBrowserName());
-        props.setProperty("Browser.Version", caps.getBrowserVersion());
+        browserName = caps.getBrowserName();
+        browserVersion = caps.getBrowserVersion();
+      } else if (cachedBrowserName != null) {
+        browserName = cachedBrowserName;
+        browserVersion = cachedBrowserVersion;
       } else {
-        props.setProperty("Browser", ConfigManager.getInstance().get("browser", "chrome"));
-        props.setProperty("Browser.Version", "Unknown");
+        browserName = ConfigManager.getInstance().get("browser", "chrome");
       }
 
+      props.setProperty("Browser", browserName);
+      props.setProperty("Browser.Version", browserVersion);
       props.setProperty("Environment", System.getProperty("env", "local"));
       props.setProperty("Base.URL", ConfigManager.getInstance().get("base.url", ""));
       props.setProperty("OS", System.getProperty("os.name"));

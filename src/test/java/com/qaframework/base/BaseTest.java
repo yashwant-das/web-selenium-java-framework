@@ -105,6 +105,7 @@ public abstract class BaseTest {
     // Create WebDriver
     WebDriver driver = DriverFactory.create();
     DriverManager.set(driver);
+    com.qaframework.listeners.EnvironmentWriter.setBrowserDetails(driver);
 
     // Set implicit wait
     int implicitSeconds = com.qaframework.utils.WaitManager.getDefaultImplicitTimeout();
