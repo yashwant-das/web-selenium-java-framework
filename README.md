@@ -1,5 +1,12 @@
 # Web Selenium Java Automation Framework
 
+[![Java](https://img.shields.io/badge/Java-21-%23ED8B00?style=for-the-badge&logo=openjdk&logoColor=white)](https://jdk.java.net/21/)
+[![Selenium](https://img.shields.io/badge/Selenium-v4.45.0-%2343B02A?style=for-the-badge&logo=selenium&logoColor=white)](https://www.selenium.dev)
+[![TestNG](https://img.shields.io/badge/TestNG-v7.10.2-%23F15A24?style=for-the-badge)](https://testng.org)
+[![Allure](https://img.shields.io/badge/Allure-v2.35.2-%2354A5D5?style=for-the-badge)](https://allurereport.org)
+[![REST Assured](https://img.shields.io/badge/REST--Assured-v5.5.0-%23689F38?style=for-the-badge)](https://rest-assured.io)
+[![Maven](https://img.shields.io/badge/Maven-3.9%2B-%23C71A36?style=for-the-badge&logo=apachemaven&logoColor=white)](https://maven.apache.org)
+
 Java test automation framework built with **TestNG** and **Selenium WebDriver**. Features Page Object Model, Component Object Pattern, parallel execution, Allure reports, retry logic, and multi-environment configuration.
 
 ## Architecture Overview
