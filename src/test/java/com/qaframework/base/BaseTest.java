@@ -1,8 +1,11 @@
 package com.qaframework.base;
 
+import com.qaframework.assertions.SoftAssertionHelper;
 import com.qaframework.config.ConfigManager;
 import com.qaframework.driver.DriverFactory;
 import com.qaframework.driver.DriverManager;
+import com.qaframework.listeners.AllureSeleniumListener;
+import com.qaframework.listeners.RetryAnalyzerListener;
 import java.time.Duration;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -20,8 +23,9 @@ import org.testng.annotations.Listeners;
  * <p>Every automated test should extend this class to inherit:
  *
  * <ul>
- *   <li>{@code @BeforeMethod}: driver creation, implicit wait setup, config reload
- *   <li>{@code @AfterMethod}: driver cleanup with screenshot capture on failure
+ *   <li>{@code @BeforeMethod}: driver creation, implicit wait setup, config reload, and base.url
+ *       navigation
+ *   <li>{@code @AfterMethod}: soft assertion verification and driver cleanup
  * </ul>
  *
  * <h2>Parallel Execution</h2>
@@ -29,26 +33,16 @@ import org.testng.annotations.Listeners;
  * <p>This class is thread-safe. Each test thread gets its own WebDriver instance via {@link
  * DriverManager}, which wraps a {@code ThreadLocal<WebDriver>}.
  *
- * <h2>Usage</h2>
- *
- * <pre>{@code
- * public class LoginTest extends BaseTest {
- *     @Test
- *     public void testValidLogin() {
- *         LoginPage loginPage = new LoginPage();
- *         DashboardPage dashboard = loginPage.login("admin", "admin");
- *         Assert.assertTrue(dashboard.isHeaderDisplayed(), "Dashboard should be visible");
- *     }
- * }
- * }</pre>
- *
  * @author QA Framework Team
  * @since 1.0
  */
-@Listeners(com.qaframework.listeners.ScreenshotListener.class)
+@Listeners({AllureSeleniumListener.class, RetryAnalyzerListener.class})
 public abstract class BaseTest {
 
   protected static final Logger log = LoggerFactory.getLogger(BaseTest.class);
+
+  private static final ThreadLocal<SoftAssertionHelper> softAssertion =
+      ThreadLocal.withInitial(SoftAssertionHelper::new);
 
   /** Returns the current thread's WebDriver instance. */
   protected WebDriver getDriver() {
@@ -66,6 +60,24 @@ public abstract class BaseTest {
         driver, Duration.ofSeconds(com.qaframework.utils.WaitManager.getDefaultExplicitTimeout()));
   }
 
+  /** Returns the SoftAssertionHelper instance for the current thread. */
+  protected SoftAssertionHelper softly() {
+    return softAssertion.get();
+  }
+
+  /**
+   * Navigates to a path relative to the base.url config.
+   *
+   * @param path the relative path (e.g. "/login")
+   */
+  protected void navigateTo(String path) {
+    String baseUrl =
+        ConfigManager.getInstance().get("base.url", "https://the-internet.herokuapp.com");
+    String url = baseUrl + path;
+    log.info("Navigating to URL: {}", url);
+    getDriver().get(url);
+  }
+
   // ──────────────────────────────────────────────
   // Test lifecycle
   // ──────────────────────────────────────────────
@@ -79,9 +91,11 @@ public abstract class BaseTest {
    *   <li>Reload ConfigManager from the active environment (system property "env")
    *   <li>Create driver via {@code DriverFactory.create()}
    *   <li>Set implicit wait timeout on the driver
+   *   <li>Initialize a fresh thread-local SoftAssertionHelper
+   *   <li>Navigate to base.url
    * </ol>
    */
-  @BeforeMethod
+  @BeforeMethod(alwaysRun = true)
   public void setUp(ITestContext context) {
     // Reload config from active environment (passed as -Denv=qa or similar)
     String env = System.getProperty("env", "local");
@@ -97,23 +111,37 @@ public abstract class BaseTest {
     log.debug("Implicit wait: {}s", implicitSeconds);
     driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(implicitSeconds));
 
+    // Reset soft assertion for this thread
+    softAssertion.set(new SoftAssertionHelper());
+
+    // Navigate to base.url
+    String baseUrl =
+        ConfigManager.getInstance().get("base.url", "https://the-internet.herokuapp.com");
+    log.info("Navigating to base URL: {}", baseUrl);
+    driver.get(baseUrl);
+
     log.info("WebDriver created for thread: {}", Thread.currentThread().getName());
   }
 
   /**
    * Quits the WebDriver after each test method.
    *
-   * <p>If the test failed, takes a screenshot before closing the browser.
+   * <p>Invokes soft assertions assertAll and cleans up the thread-local state.
    */
-  @AfterMethod
+  @AfterMethod(alwaysRun = true)
   public void tearDown(ITestResult result) {
     String methodName = result.getName();
     log.info("Tearing down test: {}", methodName);
 
-    // Quit driver
-    if (DriverManager.hasDriver()) {
-      DriverManager.quitDriver();
-      log.info("WebDriver quit for test: {}", methodName);
+    try {
+      softly().assertAll();
+    } finally {
+      softAssertion.remove();
+      // Quit driver
+      if (DriverManager.hasDriver()) {
+        DriverManager.quitDriver();
+        log.info("WebDriver quit for test: {}", methodName);
+      }
     }
   }
 }

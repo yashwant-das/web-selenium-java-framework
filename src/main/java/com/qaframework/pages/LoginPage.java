@@ -2,6 +2,7 @@ package com.qaframework.pages;
 
 import com.qaframework.config.ConfigManager;
 import com.qaframework.utils.WaitManager;
+import io.qameta.allure.Step;
 import org.openqa.selenium.By;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -80,6 +81,7 @@ public class LoginPage extends BasePage {
    * @param password the login password
    * @return a populated {@code DashboardPage} instance
    */
+  @Step("Login as user: {username}")
   public DashboardPage login(String username, String password) {
     log.info("Logging in as: {}", username);
     submitCredentials(username, password);
@@ -94,6 +96,7 @@ public class LoginPage extends BasePage {
    * @param password the login password
    * @return the current {@code LoginPage}
    */
+  @Step("Attempt invalid login as user: {username}")
   public LoginPage loginExpectingFailure(String username, String password) {
     log.info("Submitting invalid login as: {}", username);
     submitCredentials(username, password);
@@ -111,31 +114,37 @@ public class LoginPage extends BasePage {
   // ──────────────────────────────────────────────
 
   /** Returns whether the username field is displayed. */
+  @Step("Verify username field is displayed")
   public boolean isUsernameFieldDisplayed() {
     return isDisplayed(USERNAME_FIELD);
   }
 
   /** Returns whether the password field is displayed. */
+  @Step("Verify password field is displayed")
   public boolean isPasswordFieldDisplayed() {
     return isDisplayed(PASSWORD_FIELD);
   }
 
   /** Returns whether the login button is displayed. */
+  @Step("Verify login button is displayed")
   public boolean isLoginButtonDisplayed() {
     return isDisplayed(LOGIN_BUTTON);
   }
 
   /** Returns whether the flash success message is displayed. */
+  @Step("Verify success flash message is displayed")
   public boolean isSuccessMessageDisplayed() {
     return isDisplayed(FLASH_SUCCESS);
   }
 
   /** Returns whether the flash error message is displayed. */
+  @Step("Verify error flash message is displayed")
   public boolean isErrorMessageDisplayed() {
     return isDisplayed(FLASH_ERROR);
   }
 
   /** Returns the flash message text (success, error, or empty). */
+  @Step("Get flash message text")
   public String getFlashMessageText() {
     try {
       return getText(FLASH_MESSAGE);
@@ -151,6 +160,7 @@ public class LoginPage extends BasePage {
    * @param text the expected substring text
    * @return {@code true} if text is present, {@code false} otherwise
    */
+  @Step("Verify error message contains: {text}")
   public boolean isErrorMessageContaining(String text) {
     try {
       return getText(FLASH_ERROR).contains(text);

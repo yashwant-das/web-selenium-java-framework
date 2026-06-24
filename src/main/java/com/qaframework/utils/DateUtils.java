@@ -20,7 +20,6 @@ import java.util.Locale;
 public final class DateUtils {
 
   private static final DateTimeFormatter ISO_DATE = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-  private static final DateTimeFormatter DISPLAY_FORMAT = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
   private DateUtils() {
     throw new UnsupportedOperationException("Utility class; no instances.");
@@ -149,7 +148,7 @@ public final class DateUtils {
   public static LocalDate between(LocalDate start, LocalDate end) {
     long days = ChronoUnit.DAYS.between(start, end);
     if (days <= 0) return start;
-    int randomDays = (int) (Math.random() * days);
+    long randomDays = java.util.concurrent.ThreadLocalRandom.current().nextLong(days);
     return start.plusDays(randomDays);
   }
 

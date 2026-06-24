@@ -1,6 +1,6 @@
 # web-selenium-java-framework
 
-Java test automation framework built with **TestNG** and **Selenium WebDriver**. Features Page Object Model, parallel execution, Allure reports, retry logic, and multienvironment configuration.
+Java test automation framework built with **TestNG** and **Selenium WebDriver**. Features Page Object Model, Component Object Pattern, parallel execution, Allure reports, retry logic, and multi-environment configuration.
 
 ## Architecture Overview
 
@@ -8,6 +8,7 @@ Java test automation framework built with **TestNG** and **Selenium WebDriver**.
 src/
 ├── main/java/com/qaframework/
 │   ├── api/
+│   │   ├── ApiClient.java            ← Fluent REST client wrapper (RestAssured)
 │   │   └── BaseApiClient.java        ← RestAssured HTTP client base
 │   ├── config/
 │   │   └── ConfigManager.java        ← Multi-env properties loader + env-var override
@@ -18,7 +19,12 @@ src/
 │   ├── pages/
 │   │   ├── BasePage.java             ← Abstract POM base with waits, screenshots, actions
 │   │   ├── LoginPage.java            ← /login page object
-│   │   └── DashboardPage.java        ← post-login dashboard page object
+│   │   ├── DashboardPage.java        ← post-login dashboard page object
+│   │   ├── SearchResultsPage.java    ← Search results composed page object
+│   │   └── components/
+│   │       ├── BaseComponent.java    ← Component Object Pattern base class
+│   │       ├── NavigationBarComponent.java ← Top header component
+│   │       └── AlertDialogComponent.java   ← JavaScript alert handler component
 │   └── utils/
 │       ├── DateUtils.java            ← LocalDate formatting, relative dates, quarters
 │       ├── FileUtils.java            ← file read/write/cleanup helpers with Jackson
@@ -26,22 +32,40 @@ src/
 │       ├── ScreenshotService.java    ← base64/png screenshot capture for Allure attachments
 │       └── WaitManager.java          ← WebDriverWait wrappers (visibility, clickability, text, URL)
 └── test/java/com/qaframework/
+    ├── assertions/
+    │   └── SoftAssertionHelper.java  ← Soft assertions helper wrapping AssertJ
     ├── base/
-    │   └── BaseTest.java             ← @BeforeMethod/@AfterMethod lifecycle + screenshot on failure
+    │   └── BaseTest.java             ← @BeforeMethod/@AfterMethod lifecycle + soft assertions
+    ├── data/
+    │   ├── TestDataLoader.java       ← JSON files test data loader
+    │   ├── TestDataProvider.java     ← TestNG Data Providers (inline & JSON-based)
+    │   ├── factory/
+    │   │   ├── UserDataFactory.java  ← Java Faker test user generator
+    │   │   └── ProductDataFactory.java ← Java Faker test product generator
+    │   └── model/
+    │       ├── UserData.java         ← User Java record model
+    │       └── ProductData.java      ← Product Java record model
     ├── listeners/
-    │   ├── RetryAnalyzer.java        ← IRetryAnalyzer for flaky test retries
-    │   └── ScreenshotListener.java   ← ITestListener capturing screenshots on failure
+    │   ├── AllureSeleniumListener.java ← Custom listener for screenshots & environment info
+    │   ├── RetryAnalyzerListener.java  ← Global Annotation Transformer for retry logic
+    │   └── EnvironmentWriter.java    ← Helper writing allure environment metadata
+    ├── retry/
+    │   └── RetryAnalyzer.java        ← IRetryAnalyzer for flaky test retries
     └── tests/
-        ├── LoginTest.java            ← login flow smoke tests
-        └── ElementInteractionTest.java ← dynamic DOM element tests
+        ├── smoke/
+        │   └── LoginSmokeTest.java   ← critical path smoke tests
+        └── regression/
+            ├── LoginRegressionTest.java ← data-driven login regression tests
+            └── SearchRegressionTest.java ← UI+API hybrid search tests
 ```
 
 ### Design Principles
 
 1. **Zero shared mutable state** — `DriverManager` wraps `ThreadLocal<WebDriver>`; every parallel thread gets its own browser.
 2. **Explicit waits only** — no implicit waits on the driver directly; all waits flow through `WaitManager`.
-3. **Page Object Model** — each page class encapsulates locators and interactions; test code speaks in domain language.
-4. **Multienvironment config** — properties files per env, with OS environment variable override for secrets. Lock-free `ConfigManager` prevents thread contention.
+3. **Page Object Model & Component Objects** — page classes encapsulate locators and compose reusable widgets using `BaseComponent`.
+4. **Multi-environment config** — properties files per env, with OS environment variable override for secrets. Lock-free `ConfigManager` prevents thread contention.
+5. **Robust Soft Assertions** — standard thread-local `SoftAssertions` verified automatically at test completion.
 
 ## Quick Start
 
@@ -86,13 +110,8 @@ TestNG runs tests in parallel with the configured thread count. The suite XML fi
 
 ## Retry Logic
 
-Annotate flaky test methods with `RetryAnalyzer`:
-```java
-@Test(retryAnalyzer = RetryAnalyzer.class)
-public void testFlakyFeature() { ... }
-```
-
-Retries up to 3 times by default. Override via system property: `-Dtest.retry.max=5`.
+Retry logic is wired globally by `RetryAnalyzerListener`. All TestNG test methods automatically retry failed runs based on the `retry.count` configuration (defaulting to 3).
+To disable or customize retry counts, override `retry.count` in properties or via env variable.
 
 ## Reporting
 
@@ -121,3 +140,12 @@ mvn test -P regression             # Run full regression
 mvn allure:serve                   # Launch Allure report (port 8080)
 mvn spotless:apply                 # Auto-format code
 ```
+
+## Documentation Reference
+
+For more detailed guides on the framework, refer to the following documents:
+- [Framework Architecture](file:///Users/yash/Workspace/GitHub/web-selenium-java-framework/FRAMEWORK_ARCHITECTURE.md)
+- [Contributing Guide](file:///Users/yash/Workspace/GitHub/web-selenium-java-framework/CONTRIBUTING.md)
+- [Testing Guidelines](file:///Users/yash/Workspace/GitHub/web-selenium-java-framework/TESTING_GUIDELINES.md)
+- [Development Roadmap](file:///Users/yash/Workspace/GitHub/web-selenium-java-framework/ROADMAP.md)
+

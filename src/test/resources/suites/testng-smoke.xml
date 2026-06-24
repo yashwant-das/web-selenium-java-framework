@@ -1,14 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
-  Smoke test suite: critical path regression runs before every deployment.
-
-  Usage: mvn test -P smoke
--->
-<suite name="Smoke Tests" verbose="3" parallel="classes" thread-count="2">
-     <test name="Smoke - Critical Paths">
-         <classes>
-             <class name="com.qaframework.tests.LoginTest"/>
-             <class name="com.qaframework.tests.ElementInteractionTest"/>
-         </classes>
-      </test>
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<suite name="Smoke Suite" parallel="classes" thread-count="2">
+  <listeners>
+    <listener class-name="com.qaframework.listeners.AllureSeleniumListener"/>
+    <listener class-name="com.qaframework.listeners.RetryAnalyzerListener"/>
+  </listeners>
+  <test name="Smoke Tests">
+    <groups>
+      <run>
+        <include name="smoke"/>
+      </run>
+    </groups>
+    <packages>
+      <package name="com.qaframework.tests.smoke"/>
+    </packages>
+  </test>
 </suite>

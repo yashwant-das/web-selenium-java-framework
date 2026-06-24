@@ -55,7 +55,6 @@ public final class JsonUtils {
    * @param elementClass the class of the array elements
    * @return the deserialized array
    */
-  @SuppressWarnings("unchecked")
   public static <T> T[] toArray(String json, Class<T> elementClass) {
     try {
       return OBJECT_MAPPER.readValue(

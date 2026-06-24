@@ -1,0 +1,15 @@
+graph TD
+    TestLayer["Test Layer (smoke & regression tests)"]
+    PageObjectLayer["Page Object Layer (POM & Component Objects)"]
+    DriverLayer["Driver Layer (DriverFactory & DriverManager)"]
+    ConfigLayer["Config Layer (ConfigManager & Test Data Loader)"]
+    UtilityLayer["Utility Layer (WaitManager & SoftAssertions & API Client)"]
+    ReportingLayer["Reporting Layer (Allure & Logback Listeners)"]
+
+    TestLayer --> PageObjectLayer
+    PageObjectLayer --> DriverLayer
+    PageObjectLayer --> UtilityLayer
+    TestLayer --> UtilityLayer
+    TestLayer --> ReportingLayer
+    DriverLayer --> ConfigLayer
+    UtilityLayer --> ConfigLayer

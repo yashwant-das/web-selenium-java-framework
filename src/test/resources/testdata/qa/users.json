@@ -1,0 +1,7 @@
+[
+  { "id": 1, "name": "Alice Johnson", "username": "ajohnson", "password": "password123", "email": "alice@example.com", "role": "admin" },
+  { "id": 2, "name": "Bob Smith", "username": "bsmith", "password": "password123", "email": "bob@example.com", "role": "user" },
+  { "id": 3, "name": "Charlie Brown", "username": "cbrown", "password": "password123", "email": "charlie@example.com", "role": "user" },
+  { "id": 4, "name": "Diana Prince", "username": "dprince", "password": "password123", "email": "diana@example.com", "role": "moderator" },
+  { "id": 5, "name": "Eve Martinez", "username": "emartinez", "password": "password123", "email": "eve@example.com", "role": "user" }
+]

@@ -1,0 +1,18 @@
+graph TD
+    Start["Test Execution Start"] --> ConfigLoad["ConfigManager Loads Properties"]
+    ConfigLoad --> DriverRequest["DriverFactory.create() Called"]
+    DriverRequest --> CheckRemote{"Is Remote URL set?"}
+    CheckRemote -- Yes --> CreateRemote["Create RemoteWebDriver (Selenium Grid 4)"]
+    CheckRemote -- No --> LocalSwitch{"Browser Switch (Java 21)"}
+    LocalSwitch -- Chrome --> CreateChrome["Create ChromeDriver with Stability Options"]
+    LocalSwitch -- Firefox --> CreateFirefox["Create FirefoxDriver with Stability Options"]
+    LocalSwitch -- Edge --> CreateEdge["Create EdgeDriver with Stability Options"]
+    CreateRemote --> SetDriver["DriverManager.set(driver)"]
+    CreateChrome --> SetDriver
+    CreateFirefox --> SetDriver
+    CreateEdge --> SetDriver
+    SetDriver --> SetImplicit["Set Implicit Wait & Browser Maximize"]
+    SetImplicit --> UseDriver["Test Execution uses getDriver()"]
+    UseDriver --> TearDown["tearDown() Lifecycle hook"]
+    TearDown --> QuitDriver["DriverManager.quitDriver()"]
+    QuitDriver --> End["Driver ThreadLocal Cleaned Up"]

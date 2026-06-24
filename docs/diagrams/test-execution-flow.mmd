@@ -1,0 +1,33 @@
+sequenceDiagram
+    autonumber
+    participant TestRunner as TestNG Runner
+    participant Listener as AllureSeleniumListener
+    participant BaseTest as BaseTest
+    participant Test as Test Class
+    participant Driver as DriverManager
+
+    TestRunner->>Listener: onStart(Suite)
+    Listener->>TestRunner: Log Suite Start
+    TestRunner->>BaseTest: setUp()
+    BaseTest->>Driver: DriverFactory.create()
+    Driver-->>BaseTest: Set ThreadLocal Driver
+    BaseTest->>Driver: Navigate to base.url
+    TestRunner->>Listener: onTestStart(Test)
+    TestRunner->>Test: Execute Test Method
+    alt Test Succeeds
+        Test-->>TestRunner: Success
+        TestRunner->>Listener: onTestSuccess(Test)
+    else Test Fails
+        Test-->>TestRunner: Failure
+        TestRunner->>Listener: onTestFailure(Test)
+        Listener->>Driver: getDriver()
+        Listener->>Listener: Save Screenshot (Allure)
+        Listener->>Listener: Save Page Source (Allure)
+        Listener->>Listener: Save Browser Info (Allure)
+    end
+    TestRunner->>BaseTest: tearDown()
+    BaseTest->>BaseTest: softly().assertAll()
+    BaseTest->>Driver: quitDriver()
+    Driver-->>BaseTest: Remove ThreadLocal Driver
+    TestRunner->>Listener: onFinish(Suite)
+    Listener->>Listener: writeEnvironmentProperties()
