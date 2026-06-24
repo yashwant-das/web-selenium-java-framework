@@ -46,7 +46,7 @@
         <!-- Maven plugins -->
         <maven.compiler.version>3.13.0</maven.compiler.version>
         <maven.surefire.version>3.5.2</maven.surefire.version>
-        <allure.maven.version>3.0.1</allure.maven.version>
+        <allure.maven.version>2.13.0</allure.maven.version>
 
         <!-- Compiler -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
