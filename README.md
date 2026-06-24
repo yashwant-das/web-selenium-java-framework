@@ -4,7 +4,7 @@ Java test automation framework built with **TestNG** and **Selenium WebDriver**.
 
 ## Architecture Overview
 
-```
+```text
 src/
 ├── main/java/com/qaframework/
 │   ├── api/
@@ -96,6 +96,7 @@ Each environment lives in `src/test/resources/config/`:
 | `prod`  | Read-only production (no retries!) | 0       |
 
 Override any property via OS environment variables:
+
 ```bash
 # Overrides BASE_URL from the properties file
 BASE_URL=https://qa.example.com mvn test -P smoke
@@ -116,6 +117,7 @@ To disable or customize retry counts, override `retry.count` in properties or vi
 ## Reporting
 
 Allure reports are generated in `target/allure-results/`. View interactively with:
+
 ```bash
 mvn allure:serve
 ```
@@ -153,8 +155,8 @@ mvn spotless:apply
 ## Documentation Reference
 
 For more detailed guides on the framework, refer to the following documents:
+
 - [Framework Architecture](file:///Users/yash/Workspace/GitHub/web-selenium-java-framework/FRAMEWORK_ARCHITECTURE.md)
 - [Contributing Guide](file:///Users/yash/Workspace/GitHub/web-selenium-java-framework/CONTRIBUTING.md)
 - [Testing Guidelines](file:///Users/yash/Workspace/GitHub/web-selenium-java-framework/TESTING_GUIDELINES.md)
 - [Development Roadmap](file:///Users/yash/Workspace/GitHub/web-selenium-java-framework/ROADMAP.md)
-

@@ -5,6 +5,7 @@ Welcome! This guide outlines branching standards, commit messages, pull request 
 ## Branching Standards
 
 We follow a Git Flow naming convention:
+
 - **`feature/`**: New automated tests or framework capabilities (e.g. `feature/add-api-logging`)
 - **`fix/`**: Fixes for flaky tests, test failures, or framework bugs (e.g. `fix/stale-element-login`)
 - **`chore/`**: Maintenance tasks, library upgrades, or config updates (e.g. `chore/upgrade-selenium`)
@@ -14,6 +15,7 @@ We follow a Git Flow naming convention:
 ## Commit Conventions
 
 We enforce [Conventional Commits](https://www.conventionalcommits.org/):
+
 - **`feat:`** A new test class, page object, or framework feature.
 - **`fix:`** A correction to a test locator, retry configuration, or bug.
 - **`docs:`** Changes to README, architecture guide, or Javadoc.
@@ -27,18 +29,25 @@ We enforce [Conventional Commits](https://www.conventionalcommits.org/):
 ## Pull Request Checklist
 
 Before submitting a Pull Request, ensure that:
+
 1. All code formatting rules are met locally:
+
    ```bash
    mvn spotless:apply
    ```
+
 2. Static analysis checks compile and pass without violations:
+
    ```bash
    mvn clean validate
    ```
+
 3. Regression tests run successfully in headless mode:
+
    ```bash
    BROWSER_HEADLESS=true mvn test -P regression
    ```
+
 4. Documentation files are updated if new features or patterns are introduced.
 
 ---

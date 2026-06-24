@@ -46,7 +46,7 @@ Java test automation framework built with **TestNG 7.10** and **Selenium WebDriv
 
 ## Architecture
 
-```
+```text
 src/
 ├── main/java/com/qaframework/
 │    ├── api/

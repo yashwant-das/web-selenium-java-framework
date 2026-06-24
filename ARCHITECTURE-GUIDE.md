@@ -1,6 +1,8 @@
 # Claude Code Prompt: web-selenium-java-framework
-# Role: Principal QA Architect
-# Target: 2026-ready, reference-grade, enterprise Selenium 4 + TestNG framework
+
+## Role: Principal QA Architect
+
+## Target: 2026-ready, reference-grade, enterprise Selenium 4 + TestNG framework
 
 ---
 
@@ -73,7 +75,7 @@ Use these versions. Do not guess — use what is specified:
 
 Strict separation of concerns across these layers (bottom to top):
 
-```
+```text
 ┌─────────────────────────────────────────────┐
 │           Test Layer                        │  ← @Test, @Epic/@Feature/@Story, TestNG XML
 │  BaseTest · Smoke/Regression tests          │
@@ -116,21 +118,22 @@ Strict separation of concerns across these layers (bottom to top):
 - Active environment selected via Maven property: `-Denv=qa` (default: `local`).
 - **Secrets override:** `ConfigManager.get(key)` checks `System.getenv(key.toUpperCase().replace('.','_'))` first, then falls back to the properties file. Document this pattern explicitly so credentials never go in config files.
 - Properties to include in every env file:
-    - `base.url`
-    - `browser` (chrome/firefox/edge)
-    - `browser.headless`
-    - `implicit.wait.seconds`
-    - `explicit.wait.seconds`
-    - `page.load.timeout.seconds`
-    - `remote.url` (empty for local)
-    - `retry.count` (default 1)
-    - `bidi.enabled` (default false)
-    - `screenshot.on.failure` (default true)
-    - `screenshot.on.step` (default false)
+  - `base.url`
+  - `browser` (chrome/firefox/edge)
+  - `browser.headless`
+  - `implicit.wait.seconds`
+  - `explicit.wait.seconds`
+  - `page.load.timeout.seconds`
+  - `remote.url` (empty for local)
+  - `retry.count` (default 1)
+  - `bidi.enabled` (default false)
+  - `screenshot.on.failure` (default true)
+  - `screenshot.on.step` (default false)
 
 ### 4. Page Object Model + Component Object Pattern
 
 **BasePage:**
+
 - Constructor: `BasePage(WebDriver driver)` only. Inject `WebDriverWait` from `WaitManager`.
 - `PageFactory.initElements(driver, this)` is **explicitly forbidden** — it hides lazy loading issues. Use `By` locators or `WebElement` direct instantiation with custom waits.
 - Provide: `waitForElement(By)`, `click(By)`, `type(By, String)`, `getText(By)`, `isDisplayed(By)`, `scrollToElement(By)`.
@@ -138,17 +141,20 @@ Strict separation of concerns across these layers (bottom to top):
 - Return `void` from action methods that don't chain. Return `this` or the next page type for Fluent API chains.
 
 **Component Objects:**
+
 - Create an abstract `BaseComponent(WebDriver driver, WebElement root)` for reusable UI components.
 - Implement at least 2 concrete components:
-    - `NavigationBarComponent` — header navigation actions
-    - `AlertDialogComponent` — reusable alert/modal handling
+  - `NavigationBarComponent` — header navigation actions
+  - `AlertDialogComponent` — reusable alert/modal handling
 
 **Page Objects (sample):**
+
 - `LoginPage` — with Fluent API: `loginPage.enterUsername("u").enterPassword("p").clickLogin()`
 - `DashboardPage` — after login landing page
 - `SearchResultsPage` — demonstrates component composition
 
 **Anti-patterns to actively avoid and document in FRAMEWORK_ARCHITECTURE.md:**
+
 - `Thread.sleep()` anywhere
 - `driver.findElement()` without explicit waits
 - Static `WebDriver` references
@@ -159,11 +165,12 @@ Strict separation of concerns across these layers (bottom to top):
 ### 5. Reporting
 
 **Allure integration (allure-testng + BOM):**
+
 - Use `allure-bom` for version management.
 - `AllureSeleniumListener` implements `ITestListener`:
-    - `onTestFailure`: attach screenshot, attach browser info, attach page source.
-    - `onTestStart`: log test name + environment.
-    - `onFinish`: write `allure-results/environment.properties`.
+  - `onTestFailure`: attach screenshot, attach browser info, attach page source.
+  - `onTestStart`: log test name + environment.
+  - `onFinish`: write `allure-results/environment.properties`.
 - `EnvironmentWriter` writes environment.properties with: `Browser`, `Browser.Version`, `Environment`, `BaseURL`, `OS`, `Java.Version`, `Selenium.Version`, `TestNG.Version`.
 - Every page method annotated with `@Step("{method name}")`  using Allure's method reference syntax.
 - Tests annotated with `@Epic`, `@Feature`, `@Story`, `@Severity`, `@Description`, `@TmsLink`, `@Issue`.
@@ -171,6 +178,7 @@ Strict separation of concerns across these layers (bottom to top):
 - `@Attachment(value = "Screenshot", type = "image/png")`.
 
 **AspectJ configuration** (required for `@Step` and `@Attachment` to work):
+
 - Include `aspectjweaver` as `-javaagent` in Surefire `argLine`.
 - Use the `allure.maven` plugin for report generation.
 
@@ -200,6 +208,7 @@ Strict separation of concerns across these layers (bottom to top):
 ### 9. Wait Strategy
 
 `WaitManager`:
+
 - `waitForVisible(WebDriver driver, By locator, int seconds)` → `WebElement`
 - `waitForClickable(WebDriver driver, By locator, int seconds)` → `WebElement`
 - `waitForInvisible(WebDriver driver, By locator, int seconds)` → `boolean`
@@ -212,6 +221,7 @@ Strict separation of concerns across these layers (bottom to top):
 ### 10. API Client (Optional Module)
 
 `ApiClient` (in `src/main/java/com/qaframework/api/`):
+
 - Wraps RestAssured `RequestSpecification`.
 - `ApiClient.builder().baseUri(url).header(k,v).build()`.
 - Methods: `get(path)`, `post(path, body)`, `put(path, body)`, `delete(path)`, `extractAs(Class<T>)`.
@@ -232,6 +242,7 @@ Strict separation of concerns across these layers (bottom to top):
 **TestNG XML suite files:**
 
 `testng-regression.xml`:
+
 ```xml
 <suite name="Regression Suite" parallel="methods" thread-count="4">
   <listeners>
@@ -250,6 +261,7 @@ Strict separation of concerns across these layers (bottom to top):
 ```
 
 `testng-smoke.xml`:
+
 ```xml
 <suite name="Smoke Suite" parallel="tests" thread-count="2">
   <!-- same listeners -->
@@ -261,6 +273,7 @@ Strict separation of concerns across these layers (bottom to top):
 ```
 
 **Groups taxonomy:**
+
 - `@Test(groups = {"smoke"})` — critical path, < 5 min total
 - `@Test(groups = {"regression"})` — full suite
 - `@Test(groups = {"smoke", "regression"})` — both (login, homepage)
@@ -268,6 +281,7 @@ Strict separation of concerns across these layers (bottom to top):
 - `@Test(groups = {"critical"})` — zero-tolerance, highest severity
 
 **Maven profiles:**
+
 ```xml
 <profile>
   <id>smoke</id>
@@ -292,6 +306,7 @@ Strict separation of concerns across these layers (bottom to top):
 ```
 
 Run commands:
+
 - `mvn test -Psmoke -Denv=qa`
 - `mvn test -Pregression -Denv=sit -Dbrowser=firefox`
 
@@ -300,6 +315,7 @@ Run commands:
 All four tools must be wired into the `validate` or `verify` phase and must **break the build** on violation:
 
 **Spotless (Google Java Format):**
+
 ```xml
 <plugin>
   <groupId>com.diffplug.spotless</groupId>
@@ -326,16 +342,19 @@ All four tools must be wired into the `validate` or `verify` phase and must **br
 ```
 
 **Checkstyle** (Google checks):
+
 - Max line length: 120
 - Javadoc required on public methods in `main/` only
 - Import order enforced
 
 **PMD:**
+
 - Rulesets: `java-bestpractices`, `java-design`, `java-errorprone`
 - Exclude generated sources
 - Fail on `PRIORITY <= 2`
 
 **Maven Enforcer:**
+
 ```xml
 <rules>
   <requireJavaVersion><version>[21,)</version></requireJavaVersion>
@@ -348,6 +367,7 @@ All four tools must be wired into the `validate` or `verify` phase and must **br
 ### 14. Logging
 
 `logback.xml` in `src/test/resources/`:
+
 ```xml
 <configuration>
   <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
@@ -376,6 +396,7 @@ All four tools must be wired into the `validate` or `verify` phase and must **br
 ```
 
 Logging rules:
+
 - `log.debug()` for driver lifecycle events
 - `log.info()` for test milestones and navigation
 - `log.warn()` for retry attempts and slow operations
@@ -521,7 +542,7 @@ jobs:
 
 Generate this exact structure with all files populated (not empty stubs):
 
-```
+```text
 web-selenium-java-framework/
 ├── .github/
 │   └── workflows/
@@ -733,7 +754,9 @@ public abstract class BaseTest {
 ## Documentation Requirements
 
 ### README.md
+
 Include:
+
 - Framework overview badge row (Java 21, Selenium 4, TestNG, Allure, CI status)
 - Prerequisites section
 - Quick start (clone → run smoke in 3 commands)
@@ -746,22 +769,26 @@ Include:
 - License
 
 ### FRAMEWORK_ARCHITECTURE.md
+
 Include:
+
 - Mermaid architecture diagram (layered)
 - Mermaid sequence diagram: test execution lifecycle
 - Mermaid flowchart: driver lifecycle (create → use → quit)
 - Design decisions section:
-    - Why no PageFactory (lazy element issues)
-    - Why ThreadLocal (parallel safety)
-    - Why Java records for test data models
-    - Why explicit waits everywhere (reliability)
-    - Why BiDi-ready (future-proofing: CDP is being deprecated)
-    - Why Selenium Manager over WebDriverManager (bundled, zero config)
+  - Why no PageFactory (lazy element issues)
+  - Why ThreadLocal (parallel safety)
+  - Why Java records for test data models
+  - Why explicit waits everywhere (reliability)
+  - Why BiDi-ready (future-proofing: CDP is being deprecated)
+  - Why Selenium Manager over WebDriverManager (bundled, zero config)
 - Anti-patterns catalogue: 8 patterns with explanation of why each is harmful
 - Extension guide: how to add a new browser, new environment, new page
 
 ### CONTRIBUTING.md
+
 Include:
+
 - Branch strategy (feature/fix/chore prefix)
 - Commit convention (Conventional Commits)
 - PR checklist (Spotless ✓, Checkstyle ✓, tests pass ✓, docs updated ✓)
@@ -770,7 +797,9 @@ Include:
 - Code review standards
 
 ### TESTING_GUIDELINES.md
+
 Include:
+
 - Test naming convention: `should_[expectedBehavior]_when_[condition]`
 - Groups usage guide
 - Assertion philosophy: hard vs soft
@@ -780,7 +809,8 @@ Include:
 - What makes a good smoke test vs regression test
 
 ### ROADMAP.md
-```
+
+```text
 Phase 1 (Current): Core framework — Selenium 4 + TestNG + Allure + CI
 Phase 2 (Q3 2026): API bridge — REST Assured ApiClient + UI+API hybrid tests
 Phase 3 (Q4 2026): Visual regression — Playwright screenshot comparison or Applitools Eyes hook
@@ -847,6 +877,7 @@ Begin by generating the complete `pom.xml` first, then the folder structure, the
 Do not generate stub classes. Every class must be fully implemented with real logic, real locators (using `https://the-internet.herokuapp.com` as the sample application), real configuration values, and real Allure annotations.
 
 The sample application for all page objects and tests is: **`https://the-internet.herokuapp.com`**
+
 - `LoginPage` targets: `/login`
 - `DashboardPage` targets: after login
 - `SearchResultsPage` can target: `/dynamic_loading` or `/tables` as a search analogue
