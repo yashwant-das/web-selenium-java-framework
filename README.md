@@ -1,4 +1,4 @@
-# web-selenium-java-framework
+# Web Selenium Java Automation Framework
 
 Java test automation framework built with **TestNG** and **Selenium WebDriver**. Features Page Object Model, Component Object Pattern, parallel execution, Allure reports, retry logic, and multi-environment configuration.
 
