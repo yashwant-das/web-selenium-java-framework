@@ -439,6 +439,11 @@
         </profile>
     </profiles>
 
-    <!-- WebDriverManager placeholder (Selenium Manager is the default) -->
-    <!-- WebDriverManager: add io.github.bonigarcia:webdrivermanager if Selenium Manager is insufficient -->
+    <distributionManagement>
+        <repository>
+            <id>github</id>
+            <name>GitHub Packages</name>
+            <url>https://maven.pkg.github.com/yashwant-das/web-selenium-java-framework</url>
+        </repository>
+    </distributionManagement>
 </project>
