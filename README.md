@@ -156,7 +156,7 @@ mvn spotless:apply
 
 For more detailed guides on the framework, refer to the following documents:
 
-- [Framework Architecture](file:///Users/yash/Workspace/GitHub/web-selenium-java-framework/FRAMEWORK_ARCHITECTURE.md)
-- [Contributing Guide](file:///Users/yash/Workspace/GitHub/web-selenium-java-framework/CONTRIBUTING.md)
-- [Testing Guidelines](file:///Users/yash/Workspace/GitHub/web-selenium-java-framework/TESTING_GUIDELINES.md)
-- [Development Roadmap](file:///Users/yash/Workspace/GitHub/web-selenium-java-framework/ROADMAP.md)
+- [Framework Architecture](FRAMEWORK_ARCHITECTURE.md)
+- [Contributing Guide](CONTRIBUTING.md)
+- [Testing Guidelines](TESTING_GUIDELINES.md)
+- [Development Roadmap](ROADMAP.md)
