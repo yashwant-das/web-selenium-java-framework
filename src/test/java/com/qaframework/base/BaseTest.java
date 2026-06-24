@@ -3,7 +3,6 @@ package com.qaframework.base;
 import com.qaframework.config.ConfigManager;
 import com.qaframework.driver.DriverFactory;
 import com.qaframework.driver.DriverManager;
-import java.nio.file.Path;
 import java.time.Duration;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -110,17 +109,6 @@ public abstract class BaseTest {
   public void tearDown(ITestResult result) {
     String methodName = result.getName();
     log.info("Tearing down test: {}", methodName);
-
-    // Take screenshot on failure
-    if (result.getStatus() == ITestResult.FAILURE) {
-      try {
-        Path screenshot =
-            com.qaframework.utils.ScreenshotService.captureAndSave(DriverManager.getDriver());
-        log.warn("Screenshot captured for failed test {} at {}", methodName, screenshot);
-      } catch (Exception e) {
-        log.error("Failed to capture screenshot: {}", e.getMessage());
-      }
-    }
 
     // Quit driver
     if (DriverManager.hasDriver()) {

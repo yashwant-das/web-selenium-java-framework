@@ -15,6 +15,10 @@ src/
 │   │   ├── BrowserType.java          ← chrome / firefox / edge enum
 │   │   ├── DriverFactory.java        ← WebDriver instance creator (local + Grid)
 │   │   └── DriverManager.java        ← ThreadLocal<WebDriver> holder
+│   ├── pages/
+│   │   ├── BasePage.java             ← Abstract POM base with waits, screenshots, actions
+│   │   ├── LoginPage.java            ← /login page object
+│   │   └── DashboardPage.java        ← post-login dashboard page object
 │   └── utils/
 │       ├── DateUtils.java            ← LocalDate formatting, relative dates, quarters
 │       ├── FileUtils.java            ← file read/write/cleanup helpers with Jackson
@@ -27,10 +31,6 @@ src/
     ├── listeners/
     │   ├── RetryAnalyzer.java        ← IRetryAnalyzer for flaky test retries
     │   └── ScreenshotListener.java   ← ITestListener capturing screenshots on failure
-    ├── pages/
-    │   ├── BasePage.java             ← Abstract POM base with waits, screenshots, actions
-    │   ├── LoginPage.java            ← /login page object
-    │   └── DashboardPage.java        ← post-login dashboard page object
     └── tests/
         ├── LoginTest.java            ← login flow smoke tests
         └── ElementInteractionTest.java ← dynamic DOM element tests

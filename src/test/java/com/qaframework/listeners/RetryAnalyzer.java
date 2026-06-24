@@ -1,5 +1,6 @@
 package com.qaframework.listeners;
 
+import com.qaframework.config.ConfigManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.IRetryAnalyzer;
@@ -14,11 +15,11 @@ import org.testng.ITestResult;
  *
  * <h2>Configuration</h2>
  *
- * <p>Default maximum retries: 3 (4 total attempts including the original). Override via system
- * property:
+ * <p>Default maximum retries: 3 (4 total attempts including the original). Override via properties
+ * file or system environment variable:
  *
  * <pre>
- *   -Dtest.retry.max=5    ← sets max retries to 5 (6 total attempts)
+ *   retry.count=3
  * </pre>
  *
  * <h2>Example</h2>
@@ -26,7 +27,7 @@ import org.testng.ITestResult;
  * <pre>{@code
  * @Test(retryAnalyzer = RetryAnalyzer.class)
  * public void testFlakyFeature() {
- *     // Will retry up to 3 times on failure
+ *     // Will retry up to the configured count on failure
  * }
  * }</pre>
  *
@@ -36,26 +37,30 @@ import org.testng.ITestResult;
 public class RetryAnalyzer implements IRetryAnalyzer {
 
   private static final Logger log = LoggerFactory.getLogger(RetryAnalyzer.class);
-  private static final int MAX_RETRIES = 3;
   private int attempt;
 
-  /** Prevent instantiation. */
+  /** Constructs a new RetryAnalyzer with initial attempt count. */
   public RetryAnalyzer() {
     this.attempt = 0;
+  }
+
+  private int getMaxRetries() {
+    return ConfigManager.getInstance().getInt("retry.count", 3);
   }
 
   /**
    * Returns {@code true} if the test should be retried.
    *
    * @param result the current test result
-   * @return {@code true} if attempt count is below MAX_RETRIES
+   * @return {@code true} if attempt count is below the configured max retries
    */
   @Override
   public boolean retry(ITestResult result) {
-    if (attempt <= MAX_RETRIES) {
-      log.warn(
-          "Retrying test '{}' — attempt {} of {}", result.getName(), attempt + 1, MAX_RETRIES + 1);
+    int maxRetries = getMaxRetries();
+    if (attempt < maxRetries) {
       attempt++;
+      log.warn(
+          "Retrying test '{}' — retry attempt {} of {}", result.getName(), attempt, maxRetries);
       return true;
     }
     return false;

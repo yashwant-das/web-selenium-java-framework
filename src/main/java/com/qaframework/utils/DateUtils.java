@@ -161,8 +161,8 @@ public final class DateUtils {
    * @return {@code true} if both dates are in the same week
    */
   public static boolean isSameWeek(LocalDate d1, LocalDate d2) {
-    return d1.isEqual(d2.with(TemporalAdjusters.previousOrSame(java.time.DayOfWeek.MONDAY)))
-        && d2.isEqual(d1.with(TemporalAdjusters.previousOrSame(java.time.DayOfWeek.MONDAY)));
+    return d1.with(TemporalAdjusters.previousOrSame(java.time.DayOfWeek.MONDAY))
+        .isEqual(d2.with(TemporalAdjusters.previousOrSame(java.time.DayOfWeek.MONDAY)));
   }
 
   /** Returns the first day of the current month. */

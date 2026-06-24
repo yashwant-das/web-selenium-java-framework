@@ -10,7 +10,7 @@ Java test automation framework built with **TestNG 7.10** and **Selenium WebDriv
 
 | Layer       | Library            | Version   |
 |-------------|-------------------|-----------|
-| Browser     | selenium-java      | 4.27.0    |
+| Browser     | selenium-java      | 4.45.0    |
 | Test runner | testng             | 7.10.2    |
 | API         | rest-assured       | 5.5.0     |
 | JSON        | jackson-databind + jsr310 | 2.18.2 |

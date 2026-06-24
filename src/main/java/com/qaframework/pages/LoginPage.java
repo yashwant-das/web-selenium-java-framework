@@ -1,5 +1,6 @@
 package com.qaframework.pages;
 
+import com.qaframework.config.ConfigManager;
 import com.qaframework.utils.WaitManager;
 import org.openqa.selenium.By;
 import org.slf4j.Logger;
@@ -55,7 +56,16 @@ public class LoginPage extends BasePage {
 
   /** Constructs the login page and navigates to {@code /login}. */
   public LoginPage() {
-    navigateTo("/login");
+    String baseUrl =
+        ConfigManager.getInstance().get("base.url", "https://the-internet.herokuapp.com");
+    String targetUrl = baseUrl + "/login";
+    String currentUrl = getDriver().getCurrentUrl();
+    if (currentUrl == null
+        || !currentUrl.replaceAll("/$", "").equalsIgnoreCase(targetUrl.replaceAll("/$", ""))) {
+      navigateTo("/login");
+    } else {
+      log.info("Already on LoginPage ({}), skipping navigation", currentUrl);
+    }
     log.info("LoginPage loaded");
   }
 
@@ -135,7 +145,12 @@ public class LoginPage extends BasePage {
     }
   }
 
-  /** Returns whether the error flash message contains the expected text. */
+  /**
+   * Returns whether the error flash message contains the expected text.
+   *
+   * @param text the expected substring text
+   * @return {@code true} if text is present, {@code false} otherwise
+   */
   public boolean isErrorMessageContaining(String text) {
     try {
       return getText(FLASH_ERROR).contains(text);

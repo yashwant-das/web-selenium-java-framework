@@ -10,7 +10,7 @@ Java test automation framework built with **TestNG 7.10** and **Selenium WebDriv
 
 | Layer       | Library            | Version   |
 |-------------|-------------------|-----------|
-| Browser     | selenium-java      | 4.27.0    |
+| Browser     | selenium-java      | 4.45.0    |
 | Test runner | testng             | 7.10.2    |
 | API         | rest-assured       | 5.5.0     |
 | JSON        | jackson-databind + jsr310 | 2.18.2 |
@@ -57,6 +57,10 @@ src/
 │    │    ├── BrowserType.java           ← chrome / firefox / edge enum (Java 21 switch)
 │    │    ├── DriverFactory.java         ← WebDriver instance creator (local + Grid)
 │    │    └── DriverManager.java         ← ThreadLocal<WebDriver> holder
+│    ├── pages/
+│    │    ├── BasePage.java              ← Abstract POM base: waits, screenshots, actions
+│    │    ├── LoginPage.java             ← /login page object
+│    │    └── DashboardPage.java         ← post-login dashboard page object
 │    └── utils/
 │         ├── DateUtils.java             ← LocalDate formatting, relative dates, quarters
 │         ├── FileUtils.java             ← file read/write/cleanup + Jackson serialization
@@ -69,10 +73,6 @@ src/
      ├── listeners/
      │    ├── RetryAnalyzer.java         ← IRetryAnalyzer for flaky test retries
      │    └── ScreenshotListener.java    ← ITestListener for screenshot on failure
-     ├── pages/
-     │    ├── BasePage.java              ← Abstract POM base: waits, screenshots, actions
-     │    ├── LoginPage.java             ← /login page object
-     │    └── DashboardPage.java         ← post-login dashboard page object
      └── tests/
           ├── LoginTest.java             ← login flow smoke tests
           └── ElementInteractionTest.java ← dynamic DOM element tests

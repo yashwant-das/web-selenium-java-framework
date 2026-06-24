@@ -28,7 +28,7 @@ Use these versions. Do not guess — use what is specified:
 
 ```xml
 <!-- Core -->
-<selenium.version>4.27.0</selenium.version>
+<selenium.version>4.45.0</selenium.version>
 <testng.version>7.10.2</testng.version>
 
 <!-- Reporting -->
@@ -325,7 +325,7 @@ All four tools must be wired into the `validate` or `verify` phase and must **br
 </plugin>
 ```
 
-**Checkstyle** (Google checks, `suppressions.xml` for test classes):
+**Checkstyle** (Google checks):
 - Max line length: 120
 - Javadoc required on public methods in `main/` only
 - Import order enforced
@@ -529,7 +529,6 @@ web-selenium-java-framework/
 ├── .gitignore
 ├── checkstyle.xml
 ├── pmd-ruleset.xml
-├── suppressions.xml                   # Checkstyle suppressions for test classes
 ├── pom.xml
 ├── allure.properties                  # → src/test/resources/
 │
@@ -547,6 +546,8 @@ web-selenium-java-framework/
 │   │           │   └── DriverManager.java
 │   │           ├── pages/
 │   │           │   ├── BasePage.java
+│   │           │   ├── LoginPage.java
+│   │           │   ├── DashboardPage.java
 │   │           │   └── components/
 │   │           │       ├── BaseComponent.java
 │   │           │       ├── NavigationBarComponent.java
@@ -576,12 +577,10 @@ web-selenium-java-framework/
 │       │       │   ├── AllureSeleniumListener.java
 │       │       │   ├── RetryAnalyzerListener.java  # IAnnotationTransformer
 │       │       │   └── EnvironmentWriter.java
-│       │       ├── pages/
-│       │       │   ├── LoginPage.java
-│       │       │   ├── DashboardPage.java
-│       │       │   └── SearchResultsPage.java
 │       │       ├── retry/
 │       │       │   └── RetryAnalyzer.java
+│       │       ├── utils/
+│       │       │   └── DateUtilsTest.java
 │       │       └── tests/
 │       │           ├── BaseTest.java
 │       │           ├── smoke/
@@ -697,7 +696,7 @@ public abstract class BaseTest {
 //   Base.URL=https://...
 //   OS=Linux
 //   Java.Version=21.x.x
-//   Selenium.Version=4.27.0
+//   Selenium.Version=4.45.0
 ```
 
 ---

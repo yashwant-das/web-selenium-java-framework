@@ -54,14 +54,23 @@ public abstract class BasePage {
     getDriver().get(url);
   }
 
-  /** Clicks an element by locator with explicit wait for clickability. */
+  /**
+   * Clicks an element by locator with explicit wait for clickability.
+   *
+   * @param locator the By locator of the element to click
+   */
   protected void click(By locator) {
     WebElement element = WaitManager.waitForClickable(getDriver(), locator);
     log.debug("Clicking element: {}", locator);
     element.click();
   }
 
-  /** Sends keys to an element, clearing existing text first. */
+  /**
+   * Sends keys to an element, clearing existing text first.
+   *
+   * @param locator the By locator of the input element
+   * @param text the text to send
+   */
   protected void sendKeys(By locator, String text) {
     WebElement element = WaitManager.waitForClickable(getDriver(), locator);
     log.debug("Sending keys '{}' to element: {}", text, locator);
@@ -69,13 +78,23 @@ public abstract class BasePage {
     element.sendKeys(text);
   }
 
-  /** Gets the text content of an element. */
+  /**
+   * Gets the text content of an element.
+   *
+   * @param locator the By locator of the element
+   * @return the text content of the element
+   */
   protected String getText(By locator) {
     log.debug("Getting text for element: {}", locator);
     return WaitManager.waitForTextPresent(getDriver(), locator);
   }
 
-  /** Checks if an element is displayed on the page. */
+  /**
+   * Checks if an element is displayed on the page.
+   *
+   * @param locator the By locator of the element
+   * @return {@code true} if element is visible, {@code false} otherwise
+   */
   protected boolean isDisplayed(By locator) {
     try {
       int timeout = ConfigManager.getInstance().getInt("element.check.timeout", 5);
@@ -88,7 +107,12 @@ public abstract class BasePage {
     }
   }
 
-  /** Checks if an element exists on the page without waiting. */
+  /**
+   * Checks if an element exists on the page without waiting.
+   *
+   * @param locator the By locator of the element
+   * @return {@code true} if element is enabled, {@code false} otherwise
+   */
   protected boolean isEnabled(By locator) {
     try {
       WebElement element = getDriver().findElement(locator);
@@ -105,7 +129,12 @@ public abstract class BasePage {
     return base64;
   }
 
-  /** Finds an element safely — returns {@code null} instead of throwing. */
+  /**
+   * Finds an element safely — returns {@code null} instead of throwing.
+   *
+   * @param locator the By locator of the element
+   * @return the WebElement, or {@code null} if not found
+   */
   protected WebElement findElementSafe(By locator) {
     try {
       return getDriver().findElement(locator);
@@ -115,7 +144,12 @@ public abstract class BasePage {
     }
   }
 
-  /** Finds all matching elements — returns empty list if none found. */
+  /**
+   * Finds all matching elements — returns empty list if none found.
+   *
+   * @param locator the By locator of the elements
+   * @return the list of WebElements
+   */
   protected java.util.List<WebElement> findElementsSafe(By locator) {
     try {
       return getDriver().findElements(locator);

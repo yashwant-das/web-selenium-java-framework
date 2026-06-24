@@ -12,7 +12,7 @@ import org.testng.annotations.Test;
 /**
  * Tests for the login functionality on the-internet.herokuapp.com.
  *
- * <p>Validates the core user journey: navigate to login → enter credentials → view dashboard → log
+ * <p>Validates the core user journey: navigate to log in → enter credentials → view dashboard → log
  * out.
  *
  * @author QA Framework Team
