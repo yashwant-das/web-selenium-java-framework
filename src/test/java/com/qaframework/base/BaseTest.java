@@ -36,7 +36,11 @@ import org.testng.annotations.Listeners;
  * @author QA Framework Team
  * @since 1.0
  */
-@Listeners({AllureSeleniumListener.class, RetryAnalyzerListener.class})
+@Listeners({
+  AllureSeleniumListener.class,
+  RetryAnalyzerListener.class,
+  io.qameta.allure.testng.AllureTestNg.class
+})
 public abstract class BaseTest {
 
   protected static final Logger log = LoggerFactory.getLogger(BaseTest.class);
@@ -135,6 +139,50 @@ public abstract class BaseTest {
     log.info("Tearing down test: {}", methodName);
 
     try {
+      // Capture screenshot if test failed or soft assertions have errors
+      if ((result.getStatus() == ITestResult.FAILURE || !softly().errorsCollected().isEmpty())
+          && DriverManager.hasDriver()) {
+        log.warn(
+            "Test failed or soft assertions failed: {} — capturing screenshot for Allure",
+            methodName);
+        try {
+          WebDriver driver = getDriver();
+          byte[] screenshotBytes = com.qaframework.utils.ScreenshotService.captureBytes(driver);
+          io.qameta.allure.Allure.addAttachment(
+              "Failure Screenshot",
+              "image/png",
+              new java.io.ByteArrayInputStream(screenshotBytes),
+              "png");
+
+          String pageSource = driver.getPageSource();
+          io.qameta.allure.Allure.addAttachment(
+              "Page Source",
+              "text/html",
+              new java.io.ByteArrayInputStream(
+                  pageSource.getBytes(java.nio.charset.StandardCharsets.UTF_8)),
+              "html");
+
+          if (driver instanceof org.openqa.selenium.HasCapabilities hasCaps) {
+            org.openqa.selenium.Capabilities caps = hasCaps.getCapabilities();
+            String browserInfo =
+                String.format(
+                    "Browser: %s%nVersion: %s%nPlatform: %s%nCapabilities: %s",
+                    caps.getBrowserName(),
+                    caps.getBrowserVersion(),
+                    caps.getPlatformName(),
+                    caps.asMap());
+            io.qameta.allure.Allure.addAttachment(
+                "Browser Info",
+                "text/plain",
+                new java.io.ByteArrayInputStream(
+                    browserInfo.getBytes(java.nio.charset.StandardCharsets.UTF_8)),
+                "txt");
+          }
+        } catch (Exception e) {
+          log.error("Failed to capture and attach failure screenshot to Allure", e);
+        }
+      }
+
       softly().assertAll();
     } finally {
       softAssertion.remove();

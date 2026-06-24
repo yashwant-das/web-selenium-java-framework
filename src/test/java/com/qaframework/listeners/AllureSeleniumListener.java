@@ -46,10 +46,14 @@ public class AllureSeleniumListener implements ITestListener, ISuiteListener {
         // Also save screenshot to local target/screenshots directory
         ScreenshotService.captureAndSave(driver);
 
-        // Attach to Allure Report
-        saveScreenshot(driver);
-        savePageSource(driver);
-        saveBrowserInfo(driver);
+        // Attach to Allure Report only if test lifecycle is active
+        if (io.qameta.allure.Allure.getLifecycle().getCurrentTestCase().isPresent()) {
+          saveScreenshot(driver);
+          savePageSource(driver);
+          saveBrowserInfo(driver);
+        } else {
+          log.debug("Allure test case was already closed, skipping listener attachments.");
+        }
       } catch (Exception e) {
         log.error("Failed to attach failure evidence to Allure report", e);
       }
